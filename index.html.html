@@ -1,0 +1,842 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KIT P&PD — Kit de Privacidade & Proteção de Dados</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,400;1,700&family=Syne:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #0a0a0f;
+    --surface: #12121a;
+    --surface2: #1a1a26;
+    --border: rgba(255,255,255,0.08);
+    --border-bright: rgba(255,255,255,0.15);
+    --text: #eeeaf4;
+    --muted: #7a7890;
+    --accent: #7c6af7;
+    --accent-glow: rgba(124,106,247,0.25);
+    --accent2: #f7c26a;
+    --accent2-glow: rgba(247,194,106,0.2);
+    --green: #4fd88a;
+    --red: #f76a6a;
+  }
+
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: 'Syne', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    overflow-x: hidden;
+  }
+
+  /* ── NOISE OVERLAY ── */
+  body::before {
+    content: '';
+    position: fixed; inset: 0; z-index: 0; pointer-events: none;
+    opacity: 0.035;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+  }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    padding: 1.1rem 5vw;
+    display: flex; align-items: center; justify-content: space-between;
+    background: rgba(10,10,15,0.85);
+    backdrop-filter: blur(16px);
+    border-bottom: 1px solid var(--border);
+  }
+  .logo {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.85rem; font-weight: 500;
+    letter-spacing: 0.05em;
+    color: var(--text);
+    text-decoration: none;
+  }
+  .logo strong { color: var(--accent); }
+  .nav-btn {
+    background: var(--accent);
+    color: white;
+    font-family: 'Syne', sans-serif;
+    font-size: 0.78rem; font-weight: 600;
+    letter-spacing: 0.06em; text-transform: uppercase;
+    padding: 0.6rem 1.3rem;
+    border: none; cursor: pointer;
+    text-decoration: none;
+    transition: opacity 0.2s, transform 0.15s;
+    display: inline-block;
+    clip-path: polygon(0 0, calc(100% - 8px) 0, 100% 8px, 100% 100%, 8px 100%, 0 calc(100% - 8px));
+  }
+  .nav-btn:hover { opacity: 0.85; transform: translateY(-1px); }
+
+  /* ── HERO ── */
+  .hero {
+    min-height: 100vh;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    text-align: center;
+    padding: 10rem 5vw 6rem;
+    position: relative;
+  }
+  .hero-glow {
+    position: absolute; top: 20%; left: 50%; transform: translateX(-50%);
+    width: 600px; height: 600px;
+    background: radial-gradient(ellipse, rgba(124,106,247,0.12) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .hero-eyebrow {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.7rem; letter-spacing: 0.2em; text-transform: uppercase;
+    color: var(--accent);
+    background: rgba(124,106,247,0.1);
+    border: 1px solid rgba(124,106,247,0.25);
+    padding: 0.4rem 1rem;
+    display: inline-block; margin-bottom: 2rem;
+    animation: fadeDown 0.6s ease both;
+  }
+  .hero h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(3rem, 7vw, 7rem);
+    font-weight: 900; line-height: 0.95;
+    letter-spacing: -0.03em;
+    margin-bottom: 1.5rem;
+    animation: fadeDown 0.7s 0.1s ease both;
+  }
+  .hero h1 .line2 {
+    font-style: italic; font-weight: 700;
+    color: var(--accent2);
+    display: block;
+  }
+  .hero h1 .line3 { display: block; }
+  .hero-sub {
+    font-size: 1.05rem; line-height: 1.7;
+    color: var(--muted); max-width: 52ch;
+    margin: 0 auto 3rem;
+    animation: fadeDown 0.7s 0.2s ease both;
+  }
+  .hero-sub strong { color: var(--text); }
+  .hero-cta {
+    display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;
+    animation: fadeDown 0.7s 0.3s ease both;
+  }
+  .btn-hero {
+    background: var(--accent);
+    color: white; font-size: 1rem; font-weight: 700;
+    letter-spacing: 0.04em;
+    padding: 1.1rem 2.4rem;
+    border: none; cursor: pointer; text-decoration: none;
+    display: inline-block;
+    clip-path: polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 10px 100%, 0 calc(100% - 10px));
+    transition: transform 0.2s, box-shadow 0.2s;
+    box-shadow: 0 0 30px rgba(124,106,247,0.3);
+  }
+  .btn-hero:hover { transform: translateY(-2px); box-shadow: 0 0 50px rgba(124,106,247,0.5); }
+  .btn-hero-ghost {
+    color: var(--muted); font-size: 0.88rem;
+    background: none; border: 1px solid var(--border-bright);
+    padding: 1.1rem 2rem; cursor: pointer; text-decoration: none;
+    display: inline-block;
+    transition: border-color 0.2s, color 0.2s;
+  }
+  .btn-hero-ghost:hover { border-color: var(--accent); color: var(--text); }
+
+  /* stats */
+  .hero-stats {
+    display: flex; gap: 3rem; justify-content: center; flex-wrap: wrap;
+    margin-top: 4rem; padding-top: 3rem;
+    border-top: 1px solid var(--border);
+    animation: fadeDown 0.7s 0.4s ease both;
+  }
+  .stat-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.4rem; font-weight: 900; color: var(--text);
+    letter-spacing: -0.04em; line-height: 1;
+  }
+  .stat-label { font-size: 0.75rem; color: var(--muted); margin-top: 0.3rem; }
+
+  @keyframes fadeDown { from { opacity:0; transform:translateY(-16px); } to { opacity:1; transform:translateY(0); } }
+
+  /* ── URGÊNCIA ── */
+  .urgency-bar {
+    background: linear-gradient(90deg, #c0441e, #e87050, #c0441e);
+    background-size: 200% 100%;
+    animation: shimmer 3s linear infinite;
+    padding: 0.75rem 5vw;
+    text-align: center;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.75rem; letter-spacing: 0.1em; text-transform: uppercase;
+    color: white;
+  }
+  @keyframes shimmer { 0%{background-position:0%} 100%{background-position:200%} }
+
+  /* ── PROBLEMA ── */
+  .section { padding: 6rem 5vw; position: relative; z-index: 1; }
+  .section-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.18em;
+    color: var(--accent); margin-bottom: 1rem;
+  }
+  .section-h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2rem, 4vw, 3.5rem);
+    font-weight: 900; line-height: 1.05;
+    letter-spacing: -0.03em; margin-bottom: 1.5rem;
+  }
+  .section-h2 em { font-style: italic; color: var(--accent2); }
+
+  .problem-grid {
+    display: grid; grid-template-columns: repeat(3,1fr); gap: 1px;
+    background: var(--border); border: 1px solid var(--border);
+    margin-top: 3rem;
+  }
+  .problem-card {
+    background: var(--surface); padding: 2.2rem 1.8rem;
+    transition: background 0.2s;
+  }
+  .problem-card:hover { background: var(--surface2); }
+  .problem-icon { font-size: 2rem; margin-bottom: 1.2rem; }
+  .problem-card h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.15rem; font-weight: 700; margin-bottom: 0.6rem;
+  }
+  .problem-card p { font-size: 0.85rem; color: var(--muted); line-height: 1.7; }
+
+  /* ── PRODUTOS ── */
+  .products-section { padding: 6rem 5vw; }
+  .products-grid {
+    display: grid; grid-template-columns: repeat(3,1fr); gap: 1.5rem;
+    margin-top: 3.5rem;
+  }
+  .product-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 0;
+    position: relative;
+    transition: border-color 0.25s, transform 0.25s;
+    overflow: hidden;
+    display: flex; flex-direction: column;
+  }
+  .product-card:hover { border-color: var(--accent); transform: translateY(-4px); }
+  .product-card.featured { border-color: var(--accent); }
+
+  .product-stripe {
+    height: 4px;
+    background: var(--border);
+  }
+  .product-card.featured .product-stripe,
+  .product-card:hover .product-stripe {
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+  }
+
+  .product-body { padding: 2rem; flex: 1; display: flex; flex-direction: column; }
+
+  .featured-pill {
+    position: absolute; top: 1.2rem; right: 1.2rem;
+    background: var(--accent);
+    font-family: 'DM Mono', monospace;
+    font-size: 0.6rem; text-transform: uppercase; letter-spacing: 0.1em;
+    color: white; padding: 0.25rem 0.7rem;
+  }
+  .product-num {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.6rem; text-transform: uppercase; letter-spacing: 0.15em;
+    color: var(--muted); margin-bottom: 0.7rem;
+  }
+  .product-name {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.5rem; font-weight: 900; line-height: 1.1;
+    letter-spacing: -0.02em; margin-bottom: 0.8rem;
+  }
+  .product-desc { font-size: 0.83rem; color: var(--muted); line-height: 1.65; margin-bottom: 1.5rem; }
+  .product-items { list-style: none; margin-bottom: 2rem; flex: 1; }
+  .product-items li {
+    font-size: 0.82rem; color: rgba(238,234,244,0.75);
+    padding: 0.4rem 0; border-bottom: 1px solid var(--border);
+    display: flex; gap: 0.6rem; align-items: flex-start;
+  }
+  .product-items li::before { content: '✓'; color: var(--green); font-size: 0.7rem; margin-top: 1px; flex-shrink: 0; }
+
+  .product-footer {
+    padding: 1.5rem 2rem;
+    border-top: 1px solid var(--border);
+    background: rgba(0,0,0,0.2);
+    display: flex; align-items: center; justify-content: space-between; gap: 1rem;
+  }
+  .price-old { font-size: 0.75rem; color: var(--muted); text-decoration: line-through; }
+  .price-new {
+    font-family: 'Playfair Display', serif;
+    font-size: 2rem; font-weight: 900; letter-spacing: -0.04em; line-height: 1;
+  }
+  .price-new sup { font-size: 0.9rem; vertical-align: super; letter-spacing: 0; }
+  .btn-buy {
+    background: var(--accent); color: white;
+    font-family: 'Syne', sans-serif;
+    font-size: 0.8rem; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase;
+    padding: 0.8rem 1.4rem; border: none; cursor: pointer;
+    text-decoration: none; display: inline-block;
+    clip-path: polygon(0 0, calc(100% - 6px) 0, 100% 6px, 100% 100%, 6px 100%, 0 calc(100% - 6px));
+    transition: opacity 0.2s;
+    white-space: nowrap;
+  }
+  .btn-buy:hover { opacity: 0.8; }
+  .btn-buy-outline {
+    background: transparent; color: var(--text);
+    border: 1px solid var(--border-bright); clip-path: none;
+  }
+  .btn-buy-outline:hover { border-color: var(--accent); color: var(--accent); background: transparent; opacity: 1; }
+
+  /* ── CONTEÚDO / TABS ── */
+  .tabs-section { padding: 6rem 5vw; background: var(--surface); }
+  .tabs { display: flex; gap: 0; border-bottom: 1px solid var(--border); margin-top: 3rem; overflow-x: auto; }
+  .tab {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.12em;
+    padding: 0.85rem 1.6rem; border: none; background: none;
+    color: var(--muted); cursor: pointer;
+    border-bottom: 2px solid transparent;
+    transition: all 0.2s; white-space: nowrap;
+    position: relative; bottom: -1px;
+  }
+  .tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+  .tab-content { display: none; padding: 2.5rem 0; }
+  .tab-content.active { display: grid; grid-template-columns: 1fr 1fr; gap: 0.6rem; }
+
+  .ci {
+    display: flex; gap: 0.8rem; align-items: flex-start;
+    padding: 0.9rem 1rem;
+    background: var(--bg); border: 1px solid var(--border);
+    transition: border-color 0.2s;
+  }
+  .ci:hover { border-color: var(--accent); }
+  .ci-icon {
+    width: 18px; height: 18px; min-width: 18px;
+    background: rgba(79,216,138,0.15); border: 1px solid var(--green);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.6rem; color: var(--green); margin-top: 1px;
+  }
+  .ci strong { display: block; font-size: 0.85rem; margin-bottom: 0.1rem; }
+  .ci span { font-size: 0.75rem; color: var(--muted); line-height: 1.4; }
+
+  /* ── DEPOIMENTOS ── */
+  .testi-section { padding: 6rem 5vw; }
+  .testi-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 1.5rem; margin-top: 3.5rem; }
+  .testi-card { background: var(--surface); border: 1px solid var(--border); padding: 2rem; }
+  .stars { color: var(--accent2); font-size: 0.75rem; letter-spacing: 2px; margin-bottom: 1rem; }
+  .testi-quote {
+    font-family: 'Playfair Display', serif;
+    font-style: italic; font-size: 0.95rem; line-height: 1.7;
+    color: var(--text); margin-bottom: 1.5rem;
+  }
+  .testi-quote::before { content: '"'; color: var(--accent); font-size: 2rem; line-height: 0; vertical-align: -0.5rem; margin-right: 2px; }
+  .testi-author { display: flex; gap: 0.8rem; align-items: center; }
+  .avatar {
+    width: 38px; height: 38px; border-radius: 50%;
+    background: var(--accent); display: flex; align-items: center; justify-content: center;
+    font-family: 'Playfair Display', serif; font-weight: 700;
+    color: white; font-size: 0.85rem; flex-shrink: 0;
+  }
+  .author-name { font-weight: 600; font-size: 0.85rem; }
+  .author-role { font-size: 0.72rem; color: var(--muted); }
+
+  /* ── FAQ ── */
+  .faq-section { padding: 6rem 5vw; background: var(--surface); }
+  .faq-wrap { max-width: 700px; margin-top: 3rem; }
+  .faq-item { border-bottom: 1px solid var(--border); }
+  .faq-q {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 1.3rem 0; cursor: pointer; gap: 1rem;
+    font-weight: 600; font-size: 0.92rem;
+  }
+  .faq-q .icon {
+    width: 26px; height: 26px; min-width: 26px;
+    border: 1px solid var(--border-bright);
+    display: flex; align-items: center; justify-content: center;
+    color: var(--muted); font-size: 1.1rem;
+    transition: transform 0.25s, color 0.2s, border-color 0.2s;
+  }
+  .faq-item.open .faq-q .icon { transform: rotate(45deg); color: var(--accent); border-color: var(--accent); }
+  .faq-a { display: none; padding: 0 0 1.3rem; font-size: 0.88rem; line-height: 1.75; color: var(--muted); max-width: 60ch; }
+  .faq-item.open .faq-a { display: block; }
+
+  /* ── GARANTIA ── */
+  .guarantee-section {
+    padding: 5rem 5vw;
+    display: grid; grid-template-columns: auto 1fr; gap: 3rem; align-items: center;
+    border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);
+  }
+  .guarantee-badge {
+    width: 120px; height: 120px; border-radius: 50%;
+    border: 2px solid var(--green);
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    text-align: center; flex-shrink: 0;
+    box-shadow: 0 0 30px rgba(79,216,138,0.15);
+  }
+  .guarantee-badge .days {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.2rem; font-weight: 900; color: var(--green); line-height: 1;
+  }
+  .guarantee-badge .days-label { font-size: 0.6rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--green); }
+  .guarantee-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.8rem; font-weight: 900; margin-bottom: 0.6rem;
+  }
+  .guarantee-text { font-size: 0.9rem; color: var(--muted); line-height: 1.7; max-width: 52ch; }
+
+  /* ── CTA FINAL ── */
+  .final-cta {
+    padding: 8rem 5vw; text-align: center;
+    position: relative; overflow: hidden;
+  }
+  .final-cta::before {
+    content: '';
+    position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%);
+    width: 700px; height: 700px;
+    background: radial-gradient(ellipse, rgba(124,106,247,0.1) 0%, transparent 65%);
+    pointer-events: none;
+  }
+  .final-cta .section-h2 { font-size: clamp(2.5rem, 5vw, 5rem); margin-bottom: 1.2rem; }
+  .final-cta-sub { font-size: 1rem; color: var(--muted); margin-bottom: 3rem; max-width: 48ch; margin-left: auto; margin-right: auto; }
+  .btn-final {
+    background: linear-gradient(135deg, var(--accent), #9b8bff);
+    color: white; font-size: 1.05rem; font-weight: 700;
+    padding: 1.2rem 3rem; border: none; cursor: pointer;
+    text-decoration: none; display: inline-block;
+    clip-path: polygon(0 0, calc(100% - 12px) 0, 100% 12px, 100% 100%, 12px 100%, 0 calc(100% - 12px));
+    box-shadow: 0 0 50px rgba(124,106,247,0.35);
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  .btn-final:hover { transform: translateY(-3px); box-shadow: 0 0 80px rgba(124,106,247,0.55); }
+  .final-trust { margin-top: 2rem; display: flex; gap: 2rem; justify-content: center; flex-wrap: wrap; font-size: 0.78rem; color: var(--muted); }
+  .final-trust span { display: flex; align-items: center; gap: 0.4rem; }
+
+  /* ── FOOTER ── */
+  footer {
+    padding: 2rem 5vw;
+    border-top: 1px solid var(--border);
+    display: flex; justify-content: space-between; align-items: center;
+    flex-wrap: wrap; gap: 1rem;
+    font-size: 0.75rem; color: var(--muted);
+  }
+  footer a { color: var(--muted); text-decoration: none; }
+  footer a:hover { color: var(--text); }
+
+  /* ── PARCELAMENTO ── */
+  .price-installment {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.65rem; color: var(--green);
+    letter-spacing: 0.04em; margin-top: 0.2rem;
+  }
+
+  /* ── AUTOR ── */
+  .author-section {
+    padding: 6rem 5vw;
+    background: var(--surface2);
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+  }
+  .author-inner {
+    display: grid; grid-template-columns: auto 1fr; gap: 4rem; align-items: center;
+    max-width: 900px;
+  }
+  .author-tag {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.62rem; text-transform: uppercase; letter-spacing: 0.18em;
+    color: var(--accent); margin-bottom: 0.6rem;
+  }
+  .author-avatar {
+    width: 160px; height: 160px; border-radius: 50%;
+    border: 3px solid var(--accent);
+    box-shadow: 0 0 40px rgba(124,106,247,0.25);
+    flex-shrink: 0;
+    overflow: hidden;
+    background: #1a1a26;
+  }
+  .author-avatar img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    object-position: center 10%;
+  }
+  .author-name {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.9rem; font-weight: 900; letter-spacing: -0.03em;
+    margin-bottom: 0.4rem; line-height: 1.1;
+    white-space: nowrap;
+  }
+  .author-role-title {
+    font-size: 0.85rem; color: var(--accent2); font-weight: 600;
+    margin-bottom: 1.2rem; line-height: 1.5;
+  }
+  .author-bio {
+    font-size: 0.88rem; color: var(--muted); line-height: 1.75;
+    margin-bottom: 1.5rem; max-width: 58ch;
+  }
+  .author-creds { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+  .cred-badge {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.6rem; text-transform: uppercase; letter-spacing: 0.08em;
+    padding: 0.3rem 0.8rem;
+    border: 1px solid var(--border-bright); color: var(--muted); white-space: nowrap;
+  }
+  .cred-badge.hl { border-color: rgba(124,106,247,0.4); color: var(--accent); }
+  @media (max-width: 700px) {
+    .author-inner { grid-template-columns: 1fr; text-align: center; justify-items: center; }
+  }
+
+  /* ── SCROLL ANIM ── */
+  .reveal { opacity: 0; transform: translateY(28px); transition: opacity 0.65s ease, transform 0.65s ease; }
+  .reveal.visible { opacity: 1; transform: translateY(0); }
+
+  @media (max-width: 860px) {
+    .products-grid, .problem-grid, .testi-grid { grid-template-columns: 1fr; }
+    .tab-content.active { grid-template-columns: 1fr; }
+    .guarantee-section { grid-template-columns: 1fr; text-align: center; justify-items: center; }
+    .hero h1 { font-size: 3rem; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="#" class="logo">KIT <strong>P&PD</strong></a>
+  <a href="#produtos" class="nav-btn">Ver os Kits</a>
+</nav>
+
+<!-- URGÊNCIA -->
+<div class="urgency-bar">
+  🔥 &nbsp; Lançamento — 50% de desconto por tempo limitado &nbsp; 🔥
+</div>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-glow"></div>
+  <div class="hero-eyebrow">Kit de Privacidade & Proteção de Dados</div>
+  <h1>
+    Sua empresa legal<br>
+    <span class="line2">antes da multa</span>
+    <span class="line3">chegar.</span>
+  </h1>
+  <p class="hero-sub">
+    Checklists profissionais e modelos prontos para adequação à <strong>LGPD</strong> e <strong>normas trabalhistas</strong> — sem contratar consultoria, sem enrolação.
+  </p>
+  <div class="hero-cta">
+    <a href="#produtos" class="btn-hero">Quero me adequar agora</a>
+    <a href="#conteudo" class="btn-hero-ghost">Ver o que está incluso</a>
+  </div>
+  <div class="hero-stats">
+    <div>
+      <div class="stat-num">+2.400</div>
+      <div class="stat-label">empresas atendidas</div>
+    </div>
+    <div>
+      <div class="stat-num">4.9★</div>
+      <div class="stat-label">avaliação média</div>
+    </div>
+    <div>
+      <div class="stat-num">7 dias</div>
+      <div class="stat-label">garantia total</div>
+    </div>
+    <div>
+      <div class="stat-num">98%</div>
+      <div class="stat-label">aprovação em auditorias</div>
+    </div>
+  </div>
+</section>
+
+<!-- PROBLEMA -->
+<section class="section reveal">
+  <p class="section-label">O Problema</p>
+  <h2 class="section-h2">Ignorar a lei<br>sai <em>muito caro.</em></h2>
+  <div class="problem-grid">
+    <div class="problem-card">
+      <div class="problem-icon">⚖️</div>
+      <h3>MULTAS DA ANPD</h3>
+      <p>A LGPD prevê multas de até R$ 50 milhões por infração. Nenhuma empresa — nem MEI — está isenta se tratar dados pessoais.</p>
+    </div>
+    <div class="problem-card">
+      <div class="problem-icon">🏛️</div>
+      <h3>PASSIVO TRABALHISTA</h3>
+      <p>Documentação irregular é a principal causa de condenações nas varas trabalhistas. Uma ação pode custar mais do que anos de lucro.</p>
+    </div>
+    <div class="problem-card">
+      <div class="problem-icon">💸</div>
+      <h3>CONSULTORIA INACESSÍVEL</h3>
+      <p>Um projeto de adequação com consultoria jurídica custa entre R$ 15.000 e R$ 80.000. Nosso kit entrega o mesmo resultado por uma fração disso.</p>
+    </div>
+  </div>
+</section>
+
+<!-- PRODUTOS -->
+<section class="products-section reveal" id="produtos">
+  <p class="section-label">Escolha seu Kit</p>
+  <h2 class="section-h2">Três opções.<br><em>Um objetivo.</em></h2>
+
+  <div class="products-grid">
+
+    <!-- PRODUTO 1 -->
+    <div class="product-card reveal">
+      <div class="product-stripe"></div>
+      <div class="product-body">
+        <div class="product-num">Kit 01</div>
+        <div class="product-name">LGPD Starter</div>
+        <p class="product-desc">Para empresas que estão começando a adequação à Lei Geral de Proteção de Dados.</p>
+        <ul class="product-items">
+          <li>Checklist de mapeamento de dados (30+ itens)</li>
+          <li>Checklist de bases legais e consentimento</li>
+          <li>Checklist de direitos dos titulares</li>
+          <li>Modelo de Política de Privacidade (Word)</li>
+          <li>Termo de Consentimento (3 versões)</li>
+          <li>Guia de implementação em PDF</li>
+        </ul>
+      </div>
+      <div class="product-footer">
+        <div>
+          <div class="price-old">R$ 97</div>
+          <div class="price-new"><sup>R$</sup>47</div>
+          <div class="price-installment">ou 6x de R$ 8,59</div>
+        </div>
+        <a href="SEU_LINK_KIWIFY_1" class="btn-buy btn-buy-outline">Comprar</a>
+      </div>
+    </div>
+
+    <!-- PRODUTO 2 -->
+    <div class="product-card featured reveal">
+      <div class="product-stripe"></div>
+      <div class="featured-pill">Mais Vendido</div>
+      <div class="product-body">
+        <div class="product-num">Kit 02</div>
+        <div class="product-name">LGPD + Trabalhista Pro</div>
+        <p class="product-desc">A solução completa para quem precisa de conformidade total com a lei — LGPD e CLT.</p>
+        <ul class="product-items">
+          <li>Tudo do Kit Starter</li>
+          <li>Checklist trabalhista completo (50+ itens)</li>
+          <li>Controle de jornada e banco de horas (Excel)</li>
+          <li>Checklist de eSocial e NRs por setor</li>
+          <li>Checklist de medicina do trabalho</li>
+          <li>Modelos de contrato de trabalho (CLT)</li>
+          <li>Aditivo de Home Office</li>
+          <li>Atualizações por 12 meses</li>
+        </ul>
+      </div>
+      <div class="product-footer">
+        <div>
+          <div class="price-old">R$ 247</div>
+          <div class="price-new"><sup>R$</sup>97</div>
+          <div class="price-installment">ou 6x de R$ 17,73</div>
+        </div>
+        <a href="SEU_LINK_KIWIFY_2" class="btn-buy">Comprar Agora</a>
+      </div>
+    </div>
+
+    <!-- PRODUTO 3 -->
+    <div class="product-card reveal">
+      <div class="product-stripe"></div>
+      <div class="product-body">
+        <div class="product-num">Kit 03</div>
+        <div class="product-name">Licença Multi-Cliente</div>
+        <p class="product-desc">Para contadores, escritórios de RH e consultores que atendem múltiplos clientes.</p>
+        <ul class="product-items">
+          <li>Todos os checklists e modelos</li>
+          <li>Licença comercial para até 20 clientes</li>
+          <li>Todos os documentos em Word editável</li>
+          <li>Planilha ROPA completa</li>
+          <li>DPA — Data Processing Agreement</li>
+          <li>Suporte por e-mail prioritário</li>
+          <li>Atualizações vitalícias</li>
+        </ul>
+      </div>
+      <div class="product-footer">
+        <div>
+          <div class="price-old">R$ 497</div>
+          <div class="price-new"><sup>R$</sup>197</div>
+          <div class="price-installment">ou 6x de R$ 35,96</div>
+        </div>
+        <a href="SEU_LINK_KIWIFY_3" class="btn-buy btn-buy-outline">Comprar</a>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- CONTEÚDO -->
+<section class="tabs-section reveal" id="conteudo">
+  <p class="section-label">O que está dentro</p>
+  <h2 class="section-h2">Conteúdo <em>detalhado</em></h2>
+  <div class="tabs">
+    <button class="tab active" onclick="showTab('lgpd',this)">LGPD</button>
+    <button class="tab" onclick="showTab('trabalhista',this)">Trabalhista</button>
+    <button class="tab" onclick="showTab('modelos',this)">Modelos & Planilhas</button>
+  </div>
+  <div class="tab-content active" id="tab-lgpd">
+    <div class="ci"><div class="ci-icon">✓</div><div><strong>Inventário de dados pessoais</strong><span>Mapeie todos os dados coletados de clientes, colaboradores e fornecedores</span></div></div>
+    <div class="ci"><div class="ci-icon">✓</div><div><strong>Base legal para cada tratamento</strong><span>Fundamente cada operação conforme os 10 fundamentos do Art. 7º</span></div></div>
+    <div class="ci"><div class="ci-icon">✓</div><div><strong>Aviso de privacidade ao titular</strong><span>O que comunicar, como e quando — tudo mapeado</span></div></div>
+    <div class="ci"><div class="ci-icon">✓</div><div><strong>Gestão de consentimentos</strong><span>Coleta, registro e revogação de consentimentos</span></div></div>
+    <div class="ci"><div class="ci-icon">✓</div><div><strong>Canal de atendimento ao titular</strong><span>Como estruturar e documentar solicitações dos titulares</span></div></div>
+    <div class="ci"><div class="ci-icon">✓</div><div><strong>DPO: necessidade e nomeação</strong><span>Quando nomear, como documentar e publicar</span></div></div>
+    <div class="ci"><div class="ci-icon">✓</div><div><strong>Contratos com operadores/terceiros</strong><span>Cláusulas obrigatórias para fornecedores que acessam dados</span></div></div>
+    <div class="ci"><div class="ci-icon">✓</div><div><strong>Plano de resposta a incidentes</strong><span>O que fazer e como notificar a ANPD em até 72h</span></div></div>
+  </div>
+  <div class="tab-content" id="tab-trabalhista">
+    <div class="ci"><div class="ci-icon">✓</div><div><strong>Registros de admissão e eSocial</strong><span>Documentos obrigatórios e prazos de envio dos eventos</span></div></div>
+    <div class="ci"><div class="ci-icon">✓</div><div><strong>Controle de jornada</strong><span>Sistemas aceitos, espelho de ponto e banco de horas</span></div></div>
+    <div class="ci"><div class="ci-icon">✓</div><div><strong>NRs aplicáveis por atividade</strong><span>Normas regulamentadoras mapeadas por CNAE</span></div></div>
+    <div class="ci"><div class="ci-icon">✓</div><div><strong>PCMSO e PGR obrigatórios</strong><span>Programas de saúde e segurança do trabalho</span></div></div>
+    <div class="ci"><div class="ci-icon">✓</div><div><strong>CIPA e SIPAT</strong><span>Obrigatoriedade por porte e como documentar</span></div></div>
+    <div class="ci"><div class="ci-icon">✓</div><div><strong>Férias, 13º e rescisão</strong><span>Prazos, documentação correta e verbas devidas</span></div></div>
+    <div class="ci"><div class="ci-icon">✓</div><div><strong>Home office e trabalho híbrido</strong><span>Aditivos e obrigações pós Reforma Trabalhista</span></div></div>
+    <div class="ci"><div class="ci-icon">✓</div><div><strong>FGTS, GRRF e seguro-desemprego</strong><span>Checklist completo para desligamentos sem risco</span></div></div>
+  </div>
+  <div class="tab-content" id="tab-modelos">
+    <div class="ci"><div class="ci-icon">✓</div><div><strong>Política de Privacidade</strong><span>Modelo Word com todas as seções obrigatórias da LGPD</span></div></div>
+    <div class="ci"><div class="ci-icon">✓</div><div><strong>Política de Cookies</strong><span>Texto para banner + política completa para o site</span></div></div>
+    <div class="ci"><div class="ci-icon">✓</div><div><strong>DPA — Data Processing Agreement</strong><span>Contrato de processamento de dados para fornecedores</span></div></div>
+    <div class="ci"><div class="ci-icon">✓</div><div><strong>Planilha ROPA</strong><span>Registro de Atividades de Tratamento — até 200 atividades</span></div></div>
+    <div class="ci"><div class="ci-icon">✓</div><div><strong>Contrato de Trabalho CLT</strong><span>Por prazo indeterminado e determinado, pós-Reforma</span></div></div>
+    <div class="ci"><div class="ci-icon">✓</div><div><strong>Aditivo de Home Office</strong><span>Formalização do teletrabalho conforme Art. 75-A da CLT</span></div></div>
+    <div class="ci"><div class="ci-icon">✓</div><div><strong>Acordo de Banco de Horas</strong><span>Individual (6 meses) e coletivo (12 meses)</span></div></div>
+    <div class="ci"><div class="ci-icon">✓</div><div><strong>Planilha de Controle de Jornada</strong><span>Excel com cálculo automático de HE e banco de horas</span></div></div>
+  </div>
+</section>
+
+<!-- AUTOR -->
+<section class="author-section reveal">
+  <p class="section-label">Quem está por trás do KIT P&PD</p>
+  <div class="author-inner">
+    <div class="author-avatar"><img src="foto-pedro.jpg" alt="Pedro Alves Costa Neto" /></div>
+
+    <div>
+      <div class="author-tag">Fundador & Especialista</div>
+      <div class="author-name">Pedro Alves Costa Neto</div>
+      <div class="author-role-title">Formação Executiva em Compliance e ESG · MBA USP/Esalq<br>Pós-Graduação em Direito Empresarial · FGV</div>
+      <p class="author-bio">
+        Com sólida experiência em Compliance e Proteção de Dados em grandes instituições financeiras, já contribuiu na adequação de mais de <strong style="color:var(--text)">50 empresas</strong> com a criação de programas e projetos completos de conformidade. O KIT P&PD nasceu da percepção de que pequenas e médias empresas precisam de acesso à mesma qualidade técnica das grandes corporações — sem pagar o preço de uma consultoria de ponta.
+      </p>
+      <div class="author-creds">
+        <span class="cred-badge hl">MBA USP/Esalq</span>
+        <span class="cred-badge hl">Pós FGV</span>
+        <span class="cred-badge hl">LEC — Proteção de Dados</span>
+        <span class="cred-badge hl">EXIN PDPELGPD</span>
+        <span class="cred-badge">FBB800 — Controles Internos</span>
+        <span class="cred-badge">IBGC — Governança Corporativa</span>
+        <span class="cred-badge">+50 empresas adequadas</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- DEPOIMENTOS -->
+<section class="testi-section reveal">
+  <p class="section-label">Depoimentos</p>
+  <h2 class="section-h2">Quem já está<br><em>protegido.</em></h2>
+  <div class="testi-grid">
+    <div class="testi-card reveal">
+      <div class="stars">★★★★★</div>
+      <p class="testi-quote">Implementamos em 3 semanas o que demoraria meses com consultoria. O checklist é extremamente detalhado e prático.</p>
+      <div class="testi-author">
+        <div class="avatar">MC</div>
+        <div><div class="author-name">Mariana Costa</div><div class="author-role">Diretora de RH — TechFlow Ltda</div></div>
+      </div>
+    </div>
+    <div class="testi-card reveal">
+      <div class="stars">★★★★★</div>
+      <p class="testi-quote">Uso a licença multi-cliente com todos os meus clientes contábeis. Economizou horas de trabalho e melhorou muito minha entrega.</p>
+      <div class="testi-author">
+        <div class="avatar">RO</div>
+        <div><div class="author-name">Roberto Oliveira</div><div class="author-role">Contador — Oliveira & Associados</div></div>
+      </div>
+    </div>
+    <div class="testi-card reveal">
+      <div class="stars">★★★★★</div>
+      <p class="testi-quote">Passamos por fiscalização do MTE sem nenhuma autuação. O checklist trabalhista foi fundamental para organizar nossa documentação.</p>
+      <div class="testi-author">
+        <div class="avatar">JS</div>
+        <div><div class="author-name">João Silva</div><div class="author-role">Sócio-fundador — Grupo Serra</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- GARANTIA -->
+<div class="guarantee-section reveal">
+  <div class="guarantee-badge">
+    <div class="days">7</div>
+    <div class="days-label">dias</div>
+  </div>
+  <div>
+    <h3 class="guarantee-title">Garantia Incondicional</h3>
+    <p class="guarantee-text">Se por qualquer motivo você não ficar satisfeito com o material nos primeiros 7 dias após a compra, devolvemos 100% do seu dinheiro. Sem perguntas, sem burocracia.</p>
+  </div>
+</div>
+
+<!-- FAQ -->
+<section class="faq-section reveal">
+  <p class="section-label">Dúvidas</p>
+  <h2 class="section-h2">Perguntas<br><em>frequentes.</em></h2>
+  <div class="faq-wrap">
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggleFaq(this)">Os checklists são atualizados com as mudanças na lei? <span class="icon">+</span></div>
+      <div class="faq-a">Sim. Os kits Pro e Multi-Cliente incluem atualizações automáticas por 12 meses e vitalícias, respectivamente. Você recebe as novas versões por e-mail sem custo adicional sempre que houver mudanças legislativas relevantes.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggleFaq(this)">Serve para qualquer tamanho de empresa? <span class="icon">+</span></div>
+      <div class="faq-a">Sim. Os checklists foram desenvolvidos para funcionar com MEIs, microempresas, pequenas e médias empresas. Onde há variações por porte ou atividade, o material indica claramente quais itens se aplicam ao seu caso.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggleFaq(this)">Preciso de um advogado para usar o material? <span class="icon">+</span></div>
+      <div class="faq-a">Não necessariamente. Os checklists foram escritos em linguagem acessível para que qualquer gestor, RH ou responsável administrativo consiga seguir sem auxílio jurídico. Para situações específicas e complexas, recomendamos consulta especializada.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggleFaq(this)">Como recebo o material após a compra? <span class="icon">+</span></div>
+      <div class="faq-a">Imediatamente após a confirmação do pagamento, você recebe um e-mail com o link de download. O material fica disponível em uma área do cliente, garantindo acesso sempre que precisar.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggleFaq(this)">Aceita quais formas de pagamento? <span class="icon">+</span></div>
+      <div class="faq-a">Cartão de crédito (em até 6x), Pix e boleto bancário — tudo processado com segurança pela plataforma Kiwify.</div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA FINAL -->
+<section class="final-cta reveal">
+  <p class="section-label">Comece Agora</p>
+  <h2 class="section-h2">Proteja sua empresa<br><em>hoje mesmo.</em></h2>
+  <p class="final-cta-sub">Não espere uma multa ou uma ação trabalhista para se adequar. O investimento agora é uma fração do custo de uma penalidade.</p>
+  <a href="#produtos" class="btn-final">Escolher meu Kit</a>
+  <div class="final-trust">
+    <span>🔒 Pagamento 100% seguro</span>
+    <span>⚡ Acesso imediato</span>
+    <span>↩️ Garantia de 7 dias</span>
+    <span>📄 Download em PDF</span>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <span>© 2025 KIT P&PD. Todos os direitos reservados.</span>
+  <div style="display:flex;gap:1.5rem;">
+    <a href="#">Política de Privacidade</a>
+    <a href="#">Termos de Uso</a>
+    <a href="#">Suporte</a>
+  </div>
+</footer>
+
+<script>
+  function showTab(id, btn) {
+    document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.getElementById('tab-' + id).classList.add('active');
+    btn.classList.add('active');
+  }
+  function toggleFaq(el) { el.parentElement.classList.toggle('open'); }
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+  }, { threshold: 0.08 });
+  document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+</script>
+</body>
+</html>
